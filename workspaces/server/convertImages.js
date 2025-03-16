@@ -32,16 +32,18 @@ async function processImages() {
     const fileName = path.basename(file, fileExt);
     const outputPath = path.join(outputDir, `${fileName}.webp`);
 
-    let input = inputPath;
     if (fileExt === '.jxl') {
       const jxlBuffer = fs.readFileSync(inputPath);
       const imageData = await jxl.decode(jxlBuffer);
       const image = new Image(imageData);
-      input = image.toBuffer();
+      await sharp(image.toBuffer())
+        .webp({ quality: 80 }) // Adjust quality as needed
+        .toFile(outputPath);
+    } else {
+      await sharp(inputPath)
+        .webp({ quality: 80 }) // Adjust quality as needed
+        .toFile(outputPath);
     }
-    await sharp(input)
-      .webp({ quality: 80 }) // Adjust quality as needed
-      .toFile(outputPath);
 
     console.log(`Converted: ${file} -> ${fileName}.webp`);
   }
