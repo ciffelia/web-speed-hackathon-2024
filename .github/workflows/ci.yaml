@@ -56,7 +56,7 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - run: pnpm --filter "@wsh-2024/testing" exec playwright install --with-deps chromium
+      - run: pnpm --filter "@wsh-2024/testing" exec playwright install chromium
 
       - run: pnpm run build
 
