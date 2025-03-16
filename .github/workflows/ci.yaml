@@ -63,3 +63,16 @@ jobs:
       - run: pnpm run start &
 
       - run: pnpm run test
+
+      - name: Collect changed files
+        run: |
+          git add -N .
+          git diff --name-only | xargs tar czf changed-files.tar.gz
+
+      - name: Upload changed files archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: changed-files
+          path: changed-files.tar.gz
+          if-no-files-found: error
+          compression-level: 0

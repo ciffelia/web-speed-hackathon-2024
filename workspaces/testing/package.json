@@ -3,8 +3,8 @@
   "private": true,
   "scripts": {
     "start": "run-s start:client start:admin",
-    "start:client": "playwright test ./src/client",
-    "start:admin": "playwright test --workers=1 ./src/admin",
+    "start:client": "playwright test ./src/client --update-snapshots",
+    "start:admin": "playwright test --workers=1 ./src/admin --update-snapshots",
     "start:debug": "run-s start:client:debug start:admin:debug",
     "start:client:debug": "DEBUG=pw:api playwright test --debug ./src/client",
     "start:admin:debug": "DEBUG=pw:api playwright test --workers=1 --debug ./src/admin"
