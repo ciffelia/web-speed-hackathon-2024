@@ -83,11 +83,11 @@ const BookDetailPage: React.FC = () => {
           <Spacer height={Space * 1} />
 
           <_AuthorWrapper href={`/authors/${book.author.id}`}>
-            {auhtorImageUrl != null && (
-              <_AvatarWrapper>
+            <_AvatarWrapper>
+              {auhtorImageUrl != null && (
                 <Image alt={book.author.name} height={32} objectFit="cover" src={auhtorImageUrl} width={32} />
-              </_AvatarWrapper>
-            )}
+              )}
+            </_AvatarWrapper>
             <Text color={Color.MONO_100} typography={Typography.NORMAL14}>
               {book.author.name}
             </Text>
