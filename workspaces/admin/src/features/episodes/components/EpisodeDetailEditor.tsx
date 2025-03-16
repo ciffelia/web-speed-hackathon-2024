@@ -280,9 +280,7 @@ export const EpisodeDetailEditor: React.FC<Props> = ({ book, episode }) => {
                   height={200}
                   src={
                     thumbnailUrl ??
-                    (episode != null
-                      ? getImageUrl({ format: 'jpg', height: 200, imageId: episode.image.id, width: 200 })
-                      : undefined)
+                    (episode != null ? getImageUrl({ height: 200, imageId: episode.image.id, width: 200 }) : undefined)
                   }
                   width={200}
                 />
