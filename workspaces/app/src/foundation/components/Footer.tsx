@@ -1,13 +1,8 @@
 import { useSetAtom } from 'jotai';
-import React, { useId } from 'react';
+import React, { useId, useState } from 'react';
 import styled from 'styled-components';
 
 import { DialogContentAtom } from '../atoms/DialogContentAtom';
-import { COMPANY } from '../constants/Company';
-import { CONTACT } from '../constants/Contact';
-import { OVERVIEW } from '../constants/Overview';
-import { QUESTION } from '../constants/Question';
-import { TERM } from '../constants/Term';
 import { Color, Space, Typography } from '../styles/variables';
 
 import { Box } from './Box';
@@ -47,7 +42,7 @@ export const Footer: React.FC = () => {
         </Text>
         <Spacer height={Space * 1} />
         <Text as="p" color={Color.MONO_100} typography={Typography.NORMAL12}>
-          {TERM}
+          <Term />
         </Text>
       </_Content>,
     );
@@ -61,7 +56,7 @@ export const Footer: React.FC = () => {
         </Text>
         <Spacer height={Space * 1} />
         <Text as="p" color={Color.MONO_100} typography={Typography.NORMAL12}>
-          {CONTACT}
+          <Contact />
         </Text>
       </_Content>,
     );
@@ -75,7 +70,7 @@ export const Footer: React.FC = () => {
         </Text>
         <Spacer height={Space * 1} />
         <Text as="p" color={Color.MONO_100} typography={Typography.NORMAL12}>
-          {QUESTION}
+          <Question />
         </Text>
       </_Content>,
     );
@@ -89,7 +84,7 @@ export const Footer: React.FC = () => {
         </Text>
         <Spacer height={Space * 1} />
         <Text as="p" color={Color.MONO_100} typography={Typography.NORMAL12}>
-          {COMPANY}
+          <Company />
         </Text>
       </_Content>,
     );
@@ -103,7 +98,7 @@ export const Footer: React.FC = () => {
         </Text>
         <Spacer height={Space * 1} />
         <Text as="p" color={Color.MONO_100} typography={Typography.NORMAL12}>
-          {OVERVIEW}
+          <Overview />
         </Text>
       </_Content>,
     );
@@ -133,4 +128,64 @@ export const Footer: React.FC = () => {
       </Flex>
     </Box>
   );
+};
+
+const Company: React.FC = () => {
+  const [text, setText] = useState('');
+
+  React.useEffect(() => {
+    import('../constants/Company').then(({ COMPANY }) => {
+      setText(COMPANY);
+    });
+  }, []);
+
+  return <>{text}</>;
+};
+
+const Contact: React.FC = () => {
+  const [text, setText] = useState('');
+
+  React.useEffect(() => {
+    import('../constants/Contact').then(({ CONTACT }) => {
+      setText(CONTACT);
+    });
+  }, []);
+
+  return <>{text}</>;
+};
+
+const Overview: React.FC = () => {
+  const [text, setText] = useState('');
+
+  React.useEffect(() => {
+    import('../constants/Overview').then(({ OVERVIEW }) => {
+      setText(OVERVIEW);
+    });
+  }, []);
+
+  return <>{text}</>;
+};
+
+const Question: React.FC = () => {
+  const [text, setText] = useState('');
+
+  React.useEffect(() => {
+    import('../constants/Question').then(({ QUESTION }) => {
+      setText(QUESTION);
+    });
+  }, []);
+
+  return <>{text}</>;
+};
+
+const Term: React.FC = () => {
+  const [text, setText] = useState('');
+
+  React.useEffect(() => {
+    import('../constants/Term').then(({ TERM }) => {
+      setText(TERM);
+    });
+  }, []);
+
+  return <>{text}</>;
 };
