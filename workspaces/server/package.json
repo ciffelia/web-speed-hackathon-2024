@@ -20,7 +20,7 @@
     "@wsh-2024/app": "workspace:*",
     "@wsh-2024/schema": "workspace:*",
     "bcryptjs": "2.4.3",
-    "better-sqlite3": "9.3.0",
+    "better-sqlite3": "11.9.0",
     "drizzle-orm": "0.29.3",
     "file-type": "19.0.0",
     "globby": "14.0.1",
@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@types/bcryptjs": "2.4.6",
-    "@types/better-sqlite3": "7.6.8",
+    "@types/better-sqlite3": "7.6.12",
     "@types/jsesc": "3.0.3",
     "@types/node": "20.9.0",
     "@types/react": "18.2.0",
