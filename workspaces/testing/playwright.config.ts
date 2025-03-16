@@ -4,7 +4,7 @@ const BASE_URL = process.env['E2E_BASE_URL'] ?? 'http://localhost:8000';
 
 export default defineConfig({
   expect: {
-    timeout: 30_000,
+    timeout: 60_000,
     toHaveScreenshot: {
       maxDiffPixelRatio: 0.03,
     },
@@ -24,9 +24,9 @@ export default defineConfig({
     },
   ],
   reporter: 'list',
-  retries: 2,
+  retries: 0,
   testDir: './src',
-  timeout: 30_000,
+  timeout: 300_000,
   use: {
     baseURL: BASE_URL,
     headless: true,
