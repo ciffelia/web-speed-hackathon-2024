@@ -131,7 +131,7 @@ jobs:
       - name: Upload HTML report
         uses: actions/upload-artifact@v4
         with:
-          name: test-report
+          name: test-report-${{ matrix.app }}
           path: workspaces/testing/playwright-report
           if-no-files-found: error
 
