@@ -126,21 +126,18 @@ jobs:
           merge-multiple: true
 
       - name: Merge into HTML Report
-        run: pnpm --filter "@wsh-2024/testing" exec playwright merge-reports --reporter html,github ./all-blob-reports
+        run: pnpm --filter "@wsh-2024/testing" exec playwright merge-reports --reporter html ./all-blob-reports
 
       - name: Upload HTML report
         uses: actions/upload-artifact@v4
         with:
           name: test-report
-          path: playwright-report
+          path: workspaces/testing/playwright-report
+          if-no-files-found: error
 
   test-merge-changed-files:
     if: ${{ !cancelled() }}
     needs: [test-sharding]
-    strategy:
-      fail-fast: false
-      matrix:
-        app: [client, admin]
     runs-on: ubuntu-24.04
     permissions: {}
     steps:
@@ -148,18 +145,18 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: all-changed-files-archive
-          pattern: changed-files-${{ matrix.app }}-*
+          pattern: changed-files-*
           merge-multiple: true
 
       - name: Extract changed files
         run: |
           mkdir -p all-changed-files
-          tar xzf all-changed-files-archive/* -C all-changed-files
+          for file in all-changed-files-archive/*; do tar xf "$file" -C all-changed-files; done
 
       - name: Upload changed files
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: all-changed-files-${{ matrix.app }}
+          name: all-changed-files
           path: all-changed-files
           if-no-files-found: error
