@@ -23,7 +23,7 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-  reporter: process.env['CI'] ? [['list'], ['blob']] : 'list',
+  reporter: process.env['CI'] ? [['github'], ['blob']] : 'list',
   retries: 0,
   testDir: './src',
   timeout: 300_000,
