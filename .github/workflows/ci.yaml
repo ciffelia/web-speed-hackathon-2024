@@ -43,6 +43,7 @@ jobs:
       - run: pnpm run lint
 
   test-sharding:
+    name: test-sharding (${{ matrix.app }}, ${{ matrix.shardIndex }}/${{ matrix.shardTotal }})
     strategy:
       fail-fast: false
       matrix:
