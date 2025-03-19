@@ -72,6 +72,8 @@ jobs:
       - run: pnpm run start &
 
       - run: pnpm --filter "@wsh-2024/testing" run start:${{ matrix.app }} --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+        env:
+          FORCE_COLOR: true
 
       - name: Upload blob report
         if: ${{ !cancelled() }}
