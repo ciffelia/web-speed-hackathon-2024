@@ -87,14 +87,14 @@ jobs:
         if: ${{ !cancelled() }}
         run: |
           git add -N .
-          git diff --name-only | xargs tar czf changed-files.tar.gz
+          git diff --diff-filter=d --name-only -z | tar cf changed-files.tar --files-from=- --null
 
       - name: Upload changed files archive
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
           name: changed-files-${{ matrix.app }}-${{ matrix.shardIndex }}
-          path: changed-files.tar.gz
+          path: changed-files.tar
           if-no-files-found: error
           compression-level: 0
 
