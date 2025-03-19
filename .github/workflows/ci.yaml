@@ -42,7 +42,13 @@ jobs:
 
       - run: pnpm run lint
 
-  test:
+  test-sharding:
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [client, admin]
+        shardIndex: [1, 2, 3, 4]
+        shardTotal: [4]
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -64,7 +70,15 @@ jobs:
 
       - run: pnpm run start &
 
-      - run: pnpm run test
+      - run: pnpm --filter "@wsh-2024/testing" run start:${{ matrix.app }} --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+
+      - name: Upload blob report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: blob-report-${{ matrix.app }}-${{ matrix.shardIndex }}
+          path: workspaces/testing/blob-report
+          retention-days: 1
 
       - name: Collect changed files
         if: ${{ !cancelled() }}
@@ -76,7 +90,73 @@ jobs:
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: changed-files
+          name: changed-files-${{ matrix.app }}-${{ matrix.shardIndex }}
           path: changed-files.tar.gz
           if-no-files-found: error
           compression-level: 0
+
+  test-merge-reports:
+    if: ${{ !cancelled() }}
+    needs: [test-sharding]
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [client, admin]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Download blob reports
+        uses: actions/download-artifact@v4
+        with:
+          path: workspaces/testing/all-blob-reports
+          pattern: blob-report-${{ matrix.app }}-*
+          merge-multiple: true
+
+      - name: Merge into HTML Report
+        run: pnpm --filter "@wsh-2024/testing" exec playwright merge-reports --reporter html,github ./all-blob-reports
+
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: playwright-report
+
+  test-merge-changed-files:
+    if: ${{ !cancelled() }}
+    needs: [test-sharding]
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [client, admin]
+    runs-on: ubuntu-24.04
+    permissions: {}
+    steps:
+      - name: Download changed files
+        uses: actions/download-artifact@v4
+        with:
+          path: all-changed-files-archive
+          pattern: changed-files-${{ matrix.app }}-*
+          merge-multiple: true
+
+      - name: Extract changed files
+        run: |
+          mkdir -p all-changed-files
+          tar xzf all-changed-files-archive/* -C all-changed-files
+
+      - name: Upload changed files
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: all-changed-files-${{ matrix.app }}
+          path: all-changed-files
+          if-no-files-found: error
