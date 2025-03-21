@@ -42,8 +42,21 @@ jobs:
 
       - run: pnpm run lint
 
+  metadata:
+    runs-on: ubuntu-24.04
+    permissions:
+      actions: read
+    outputs:
+      created-at: ${{ steps.gh-api.outputs.created-at }}
+    steps:
+      - id: gh-api
+        run: gh api "/repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/attempts/$GITHUB_RUN_ATTEMPT" --jq '"created-at=" + .created_at' >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   test-sharding:
     name: test-sharding (${{ matrix.app }}, ${{ matrix.shardIndex }}/${{ matrix.shardTotal }})
+    needs: [metadata]
     strategy:
       fail-fast: false
       matrix:
@@ -74,6 +87,9 @@ jobs:
       - run: pnpm --filter "@wsh-2024/testing" run start:${{ matrix.app }} --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
         env:
           FORCE_COLOR: true
+          ACTIONS_RUN_CREATED_AT: ${{ needs.metadata.outputs.created-at }}
+          REPORT_URL: ${{ secrets.REPORT_URL }}
+          REPORT_TOKEN: ${{ secrets.REPORT_TOKEN }}
 
       - name: Upload blob report
         if: ${{ !cancelled() }}
